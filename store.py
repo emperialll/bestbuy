@@ -57,6 +57,5 @@ class Store:
         """
         total_price: float = 0
         for item in shopping_list:
-            item[0].buy(item[1])
-            total_price += (item[0].price * item[1])
+            total_price += item[0].buy(item[1])
         return total_price

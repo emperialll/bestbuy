@@ -1,3 +1,4 @@
+import promotions
 from products import Product
 from products import NonStockedProduct
 from products import LimitedProduct
@@ -26,10 +27,10 @@ def list_all_products(store_obj):
     :param store_obj: Store Object
     :return: None
     """
+    product_list = store_obj.get_all_products()
     print('------')
-    for item_no, item in enumerate(store_obj.get_all_products(), start=1):
-        print(f'{item_no}. {item.name}, Price: ${item.price}, '
-              f'Quantity: {item.get_quantity()}')
+    for item_no, item in enumerate(product_list, start=1):
+        print(f'{item_no}. {item.show()}')
     print('------')
 
 
@@ -97,9 +98,6 @@ def start(store_obj):
             print(f'Total of {store_obj.get_total_quantity()} items in store.')
             print()
         elif user_choice == 3:
-            print('------')
-            list_all_products(store_obj)
-            print('------')
             make_order(store_obj)
         elif user_choice == 4:
             break
@@ -124,6 +122,15 @@ def main():
                     LimitedProduct("Shipping", price=10, quantity=250,
                                    maximum=1)
                     ]
+    # Create promotion catalog
+    second_half_price = promotions.SecondHalfPrice("Second Half price!")
+    third_one_free = promotions.ThirdOneFree("Third One Free!")
+    thirty_percent = promotions.PercentDiscount("30% off!", percent=30)
+
+    # Add promotions to products
+    product_list[0].set_promotion(second_half_price)
+    product_list[1].set_promotion(third_one_free)
+    product_list[3].set_promotion(thirty_percent)
 
     best_buy = Store(product_list)  # Define a new store called 'best_buy'
     start(best_buy)

@@ -1,3 +1,6 @@
+import promotions
+
+
 # Class to create different product instances
 class Product:
     def __init__(self, name: str, price: float, quantity: int,
@@ -21,6 +24,7 @@ class Product:
             self.name = name
             self.price = price
             self._quantity = quantity
+            self._promotion = None
             self._active = active
         except TypeError:
             print('The value type is not expected.')
@@ -45,6 +49,12 @@ class Product:
         self._quantity = quantity
         if self._quantity == 0:
             self._active = False  # Change active value
+
+    def get_promotion(self):
+        return self._promotion
+
+    def set_promotion(self, promotion):
+        self._promotion = promotion
 
     def is_active(self) -> bool:
         """
@@ -72,7 +82,13 @@ class Product:
         This function returns the item name, price and its quantity
         :return: str
         """
-        return f'{self.name}, Price: {self.price}, Quantity: {self._quantity}'
+        if isinstance(self._promotion, promotions.Promotion):
+            return f'{self.name}, Price: {self.price}, ' \
+                   f'Quantity: {self._quantity}, ' \
+                   f'Promotion: {self.get_promotion().discount_name}'
+        else:
+            return f'{self.name}, Price: {self.price}, ' \
+                   f'Quantity: {self._quantity}'
 
     def buy(self, quantity: int) -> float:
         """
@@ -85,8 +101,12 @@ class Product:
             raise TypeError("Invalid quantity type. Expected int.")
         try:
             if self._quantity >= quantity:
+                if isinstance(self._promotion, promotions.Promotion):
+                    total_price = self._promotion.apply_promotion(self,
+                                                                  quantity)
+                else:
+                    total_price = self.price * quantity
                 self.set_quantity(self._quantity - quantity)
-                total_price = self.price * quantity
                 return total_price
             else:
                 # Message for quantity more than available stock
@@ -97,8 +117,10 @@ class Product:
 
 
 class NonStockedProduct(Product):
-    def __init__(self, name: str, price: float, active: bool = True):
+    def __init__(self, name: str, price: float,
+                 active: bool = True):
         super().__init__(name, price, 0, active)
+        self._promotion = None
 
     def show(self):
         """
@@ -106,7 +128,8 @@ class NonStockedProduct(Product):
         :return: str
         """
         super().show()
-        return f'{self.name}, Price: {self.price}'
+        return f'{self.name}, Price: {self.price}, ' \
+               f'Promotion: {self._promotion.discount_name}'
 
     def buy(self, quantity: int) -> float:
         """
@@ -115,9 +138,12 @@ class NonStockedProduct(Product):
         :param quantity: int
         :return: total_price: float
         """
-        super().buy(quantity)
         try:
-            total_price = self.price * quantity
+            if isinstance(self._promotion, promotions.Promotion):
+                total_price = self._promotion.apply_promotion(self,
+                                                              quantity)
+            else:
+                total_price = self.price * quantity
             return total_price
         except TypeError:
             print('Error: Unexpected parameter type: quantity')
@@ -138,7 +164,13 @@ class LimitedProduct(Product):
         """
         quantity = self.maximum
         try:
-            total_price = self.price * quantity
-            return total_price
+            if self._quantity >= quantity:
+                self.set_quantity(self._quantity - quantity)
+                total_price = self.price * quantity
+                return total_price
+            else:
+                # Message for quantity more than available stock
+                print("There's no available unit")
+                raise ValueError("Insufficient quantity.")
         except TypeError:
             print('Error: Unexpected parameter type: quantity')
