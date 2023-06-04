@@ -1,4 +1,6 @@
 from products import Product
+from products import NonStockedProduct
+from products import LimitedProduct
 from store import Store
 
 
@@ -117,7 +119,10 @@ def main():
                     Product("Bose QuietComfort Earbuds",
                             price=250, quantity=500),
                     Product("Google Pixel 7",
-                            price=500, quantity=250)
+                            price=500, quantity=250),
+                    NonStockedProduct("Windows License", price=125),
+                    LimitedProduct("Shipping", price=10, quantity=250,
+                                   maximum=1)
                     ]
 
     best_buy = Store(product_list)  # Define a new store called 'best_buy'

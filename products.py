@@ -90,7 +90,55 @@ class Product:
                 return total_price
             else:
                 # Message for quantity more than available stock
-                raise ValueError("Insufficient quantity available.")
                 print("There's no available unit")
+                raise ValueError("Insufficient quantity.")
+        except TypeError:
+            print('Error: Unexpected parameter type: quantity')
+
+
+class NonStockedProduct(Product):
+    def __init__(self, name: str, price: float, active: bool = True):
+        super().__init__(name, price, 0, active)
+
+    def show(self):
+        """
+        This function returns the item name and price
+        :return: str
+        """
+        super().show()
+        return f'{self.name}, Price: {self.price}'
+
+    def buy(self, quantity: int) -> float:
+        """
+        This function gets a quantity of certain product and
+        returns the total price.
+        :param quantity: int
+        :return: total_price: float
+        """
+        super().buy(quantity)
+        try:
+            total_price = self.price * quantity
+            return total_price
+        except TypeError:
+            print('Error: Unexpected parameter type: quantity')
+
+
+class LimitedProduct(Product):
+    def __init__(self, name: str, price: float, quantity: int,
+                 maximum: int = 1, active: bool = True):
+        super().__init__(name, price, quantity, active)
+        self.maximum = maximum
+
+    def buy(self, quantity: int = 1) -> float:
+        """
+        This function gets a quantity of certain product and
+        returns the total price.
+        :param: quantity: int
+        :return: total_price: float
+        """
+        quantity = self.maximum
+        try:
+            total_price = self.price * quantity
+            return total_price
         except TypeError:
             print('Error: Unexpected parameter type: quantity')
