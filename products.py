@@ -9,6 +9,14 @@ class Product:
         :param quantity: int - mandatory
         :param active: bool - optional -> Default value is True
         """
+        if not name:
+            raise ValueError("Product name cannot be empty.")
+
+        if price < 0:
+            raise ValueError("Product price cannot be negative.")
+
+        if quantity < 0:
+            raise ValueError("Product quantity cannot be negative.")
         try:
             self.name = name
             self.price = price
@@ -32,6 +40,8 @@ class Product:
         :param quantity: int
         :return: None
         """
+        if not isinstance(quantity, int):
+            raise TypeError("Invalid quantity type. Expected int.")
         self._quantity = quantity
         if self._quantity == 0:
             self._active = False  # Change active value
@@ -71,6 +81,8 @@ class Product:
         :param quantity: int
         :return: total_price: float
         """
+        if not isinstance(quantity, int):
+            raise TypeError("Invalid quantity type. Expected int.")
         try:
             if self._quantity >= quantity:
                 self.set_quantity(self._quantity - quantity)
@@ -78,6 +90,7 @@ class Product:
                 return total_price
             else:
                 # Message for quantity more than available stock
+                raise ValueError("Insufficient quantity available.")
                 print("There's no available unit")
         except TypeError:
             print('Error: Unexpected parameter type: quantity')
