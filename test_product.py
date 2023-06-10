@@ -63,3 +63,27 @@ def test_create_product_with_invalid_details():
         Product("Example Product", 10.99, -5)
 
     print("Invalid product details test passed successfully.")
+
+
+def test_product_becomes_inactive():
+    # Create a product
+    product = Product("Example Product", 10.99, 5)
+
+    product.set_quantity(0)
+    assert product.is_active() is False, "Product should be deactivated"
+
+
+def test_buy_modifies_quantity():
+    # Create a product
+    product = Product("Example Product", 10.99, 5)
+
+    assert product.buy(2) == 21.98, "Incorrect total price"
+    assert product.get_quantity() == 3, "Incorrect quantity after buying"
+
+
+def test_buy_too_much():
+    # Create a product
+    product = Product("Example Product", 10.99, 5)
+
+    with pytest.raises(ValueError):
+        product.buy(6)
