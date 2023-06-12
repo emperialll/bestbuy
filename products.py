@@ -29,14 +29,16 @@ class Product:
         except TypeError:
             print('The value type is not expected.')
 
-    def get_quantity(self) -> int:
+    @property
+    def quantity(self) -> int:
         """
         This function return the quantity of certain product
         :return: quantity: int
         """
         return self._quantity
 
-    def set_quantity(self, quantity: int) -> None:
+    @quantity.setter
+    def quantity(self, quantity: int) -> None:
         """
         This function sets new quantity of certain product.
         If the updated quantity is ZERO this function toggles the
@@ -50,25 +52,29 @@ class Product:
         if self._quantity == 0:
             self._active = False  # Change active value
 
-    def get_promotion(self):
+    @property
+    def promotion(self):
         return self._promotion
 
-    def set_promotion(self, promotion):
+    @promotion.setter
+    def promotion(self, promotion):
         self._promotion = promotion
 
-    def is_active(self) -> bool:
+    @property
+    def active(self) -> bool:
         """
         This function returns the active status of a certain product
         :return: bool
         """
         return self._active
 
-    def activate(self) -> None:
+    @active.setter
+    def active(self, value: bool) -> None:
         """
         This function sets the active value of certain product to True
         :return: None
         """
-        self._active = True
+        self._active = value
 
     def deactivate(self) -> None:
         """
@@ -77,18 +83,27 @@ class Product:
         """
         self._active = False
 
-    def show(self) -> str:
+    def __str__(self) -> str:
         """
         This function returns the item name, price and its quantity
         :return: str
         """
-        if isinstance(self._promotion, promotions.Promotion):
+        if isinstance(self.promotion, promotions.Promotion):
             return f'{self.name}, Price: {self.price}, ' \
-                   f'Quantity: {self._quantity}, ' \
-                   f'Promotion: {self.get_promotion().discount_name}'
+                   f'Quantity: {self.quantity}, ' \
+                   f'Promotion: {self.promotion.discount_name}'
         else:
             return f'{self.name}, Price: {self.price}, ' \
-                   f'Quantity: {self._quantity}'
+                   f'Quantity: {self.quantity}'
+
+    def __gt__(self, other_product):
+        return self.price > other_product.price
+
+    def __lt__(self, other_product):
+        return self.price < other_product.price
+
+    def __eq__(self, other_product):
+        return self.price == other_product.price
 
     def buy(self, quantity: int) -> float:
         """
@@ -100,13 +115,13 @@ class Product:
         if not isinstance(quantity, int):
             raise TypeError("Invalid quantity type. Expected int.")
         try:
-            if self._quantity >= quantity:
-                if isinstance(self._promotion, promotions.Promotion):
-                    total_price = self._promotion.apply_promotion(self,
-                                                                  quantity)
+            if self.quantity >= quantity:
+                if isinstance(self.promotion, promotions.Promotion):
+                    total_price = self.promotion.apply_promotion(self,
+                                                                 quantity)
                 else:
                     total_price = self.price * quantity
-                self.set_quantity(self._quantity - quantity)
+                self.quantity = self.quantity - quantity
                 return total_price
             else:
                 # Message for quantity more than available stock
@@ -127,9 +142,9 @@ class NonStockedProduct(Product):
         This function returns the item name and price
         :return: str
         """
-        super().show()
+        super().__str__()
         return f'{self.name}, Price: {self.price}, ' \
-               f'Promotion: {self._promotion.discount_name}'
+               f'Promotion: {self.promotion.discount_name}'
 
     def buy(self, quantity: int) -> float:
         """
@@ -139,9 +154,8 @@ class NonStockedProduct(Product):
         :return: total_price: float
         """
         try:
-            if isinstance(self._promotion, promotions.Promotion):
-                total_price = self._promotion.apply_promotion(self,
-                                                              quantity)
+            if isinstance(self.promotion, promotions.Promotion):
+                total_price = self.promotion.apply_promotion(self, quantity)
             else:
                 total_price = self.price * quantity
             return total_price
@@ -164,8 +178,8 @@ class LimitedProduct(Product):
         """
         quantity = self.maximum
         try:
-            if self._quantity >= quantity:
-                self.set_quantity(self._quantity - quantity)
+            if self.quantity >= quantity:
+                self.quantity = self.quantity - quantity
                 total_price = self.price * quantity
                 return total_price
             else:

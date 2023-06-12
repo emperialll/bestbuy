@@ -32,7 +32,7 @@ class Store:
         """
         total_quantity: int = 0
         for item in self.product:
-            total_quantity += item.get_quantity()
+            total_quantity += item.quantity
         return total_quantity
 
     def get_all_products(self) -> list:
@@ -42,9 +42,19 @@ class Store:
         """
         product_list = []
         for item in self.product:
-            if item.is_active:  # filter out the inactive products
+            if item.active:  # filter out the inactive products
                 product_list.append(item)
         return product_list
+
+    def __contains__(self, product_name):
+        return product_name in self.get_all_products()
+
+    def __add__(self, other_store):
+        new_store = Store([])
+        all_items = list(self.product) + list(other_store.product)
+        for item in all_items:
+            new_store.add_product(item)
+        return new_store
 
     @staticmethod
     def order(shopping_list) -> float:
