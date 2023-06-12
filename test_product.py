@@ -9,12 +9,12 @@ def test_create_product():
     # Check if the product is created correctly
     assert product.name == "Example Product", "Incorrect product name"
     assert product.price == 10.99, "Incorrect product price"
-    assert product.get_quantity() == 5, "Incorrect product quantity"
-    assert product.is_active() is True, "Product should be active"
+    assert product.quantity == 5, "Incorrect product quantity"
+    assert product.active is True, "Product should be active"
 
     # Check the output of the show() method
     expected_output = "Example Product, Price: 10.99, Quantity: 5"
-    assert product.show() == expected_output, "Incorrect show() output"
+    assert product.__str__() == expected_output, "Incorrect show() output"
 
     # Check purchasing quantity is lower or equal than available items in stock
     with pytest.raises(ValueError):
@@ -22,17 +22,17 @@ def test_create_product():
 
     # Check buying functionality
     assert product.buy(2) == 21.98, "Incorrect total price"
-    assert product.get_quantity() == 3, "Incorrect quantity after buying"
+    assert product.quantity == 3, "Incorrect quantity after buying"
 
     # Check setting quantity to zero deactivates the product
-    product.set_quantity(0)
-    assert product.is_active() is False, "Product should be deactivated"
+    product.quantity = 0
+    assert product.active is False, "Product should be deactivated"
 
     # Check activating and deactivating the product
-    product.activate()
-    assert product.is_active() is True, "Product should be activated"
+    product.active = True
+    assert product.active is True, "Product should be activated"
     product.deactivate()
-    assert product.is_active() is False, "Product should be deactivated"
+    assert product.active is False, "Product should be deactivated"
 
     # Check handling unexpected parameter type when buying
     with pytest.raises(TypeError):
@@ -44,7 +44,7 @@ def test_create_product():
 
     # Check handling unexpected parameter type when setting quantity
     with pytest.raises(TypeError):
-        product.set_quantity("invalid")
+        product.quantity("invalid")
 
     print("Product creation test passed successfully.")
 
@@ -69,8 +69,8 @@ def test_product_becomes_inactive():
     # Create a product
     product = Product("Example Product", 10.99, 5)
 
-    product.set_quantity(0)
-    assert product.is_active() is False, "Product should be deactivated"
+    product.quantity = 0
+    assert product.active is False, "Product should be deactivated"
 
 
 def test_buy_modifies_quantity():
@@ -78,7 +78,7 @@ def test_buy_modifies_quantity():
     product = Product("Example Product", 10.99, 5)
 
     assert product.buy(2) == 21.98, "Incorrect total price"
-    assert product.get_quantity() == 3, "Incorrect quantity after buying"
+    assert product.quantity == 3, "Incorrect quantity after buying"
 
 
 def test_buy_too_much():

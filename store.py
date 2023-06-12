@@ -7,6 +7,33 @@ class Store:
         """
         self.product = product
 
+    def __contains__(self, product_name):
+        """
+            Check if a product with the given name exists in the store.
+            Args:
+                product_name (str): The name of the product to check.
+            Returns:
+                bool: True if a product with the given name exists in the
+                store, False otherwise.
+        """
+        return product_name in self.get_all_products()
+
+    def __add__(self, other_store):
+        """
+            Merge the products of two stores and create a new store.
+            Args:
+                other_store (Store): The other store whose products should be
+                merged with the current store.
+            Returns:
+                Store: A new store containing the merged products from both
+                stores.
+        """
+        new_store = Store([])
+        all_items = list(self.product) + list(other_store.product)
+        for item in all_items:
+            new_store.add_product(item)
+        return new_store
+
     def add_product(self, product) -> None:
         """
         This function gets a product object and add it to the product list
@@ -45,16 +72,6 @@ class Store:
             if item.active:  # filter out the inactive products
                 product_list.append(item)
         return product_list
-
-    def __contains__(self, product_name):
-        return product_name in self.get_all_products()
-
-    def __add__(self, other_store):
-        new_store = Store([])
-        all_items = list(self.product) + list(other_store.product)
-        for item in all_items:
-            new_store.add_product(item)
-        return new_store
 
     @staticmethod
     def order(shopping_list) -> float:

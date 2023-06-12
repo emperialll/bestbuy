@@ -29,6 +29,52 @@ class Product:
         except TypeError:
             print('The value type is not expected.')
 
+    def __str__(self) -> str:
+        """
+        This function returns the item name, price and its quantity
+        :return: str
+        """
+        if isinstance(self.promotion, promotions.Promotion):
+            return f'{self.name}, Price: {self.price}, ' \
+                   f'Quantity: {self.quantity}, ' \
+                   f'Promotion: {self.promotion.discount_name}'
+        else:
+            return f'{self.name}, Price: {self.price}, ' \
+                   f'Quantity: {self.quantity}'
+
+    def __gt__(self, other_product):
+        """
+        Compare the price of this product with another product.
+        Args:
+            other_product (Product): Another product to compare with.
+        Returns:
+            bool: True if the price of this product is greater than the price
+            of the other product, False otherwise.
+        """
+        return self.price > other_product.price
+
+    def __lt__(self, other_product):
+        """
+        Compare the price of this product with another product.
+        Args:
+            other_product (Product): Another product to compare with.
+        Returns:
+            bool: True if the price of this product is less than the price of
+            the other product, False otherwise.
+        """
+        return self.price < other_product.price
+
+    def __eq__(self, other_product):
+        """
+        Compare the price of this product with another product for equality.
+        Args:
+            other_product (Product): Another product to compare with.
+        Returns:
+            bool: True if the price of this product is equal to the price of
+            the other product, False otherwise.
+        """
+        return self.price == other_product.price
+
     @property
     def quantity(self) -> int:
         """
@@ -54,10 +100,20 @@ class Product:
 
     @property
     def promotion(self):
+        """
+        Get the promotion value of the product.
+        Returns:
+            float: The promotion value of the product.
+        """
         return self._promotion
 
     @promotion.setter
     def promotion(self, promotion):
+        """
+        Set the promotion value of the product.
+        Args:
+            promotion (float): The promotion value to set for the product.
+        """
         self._promotion = promotion
 
     @property
@@ -82,28 +138,6 @@ class Product:
         :return: None
         """
         self._active = False
-
-    def __str__(self) -> str:
-        """
-        This function returns the item name, price and its quantity
-        :return: str
-        """
-        if isinstance(self.promotion, promotions.Promotion):
-            return f'{self.name}, Price: {self.price}, ' \
-                   f'Quantity: {self.quantity}, ' \
-                   f'Promotion: {self.promotion.discount_name}'
-        else:
-            return f'{self.name}, Price: {self.price}, ' \
-                   f'Quantity: {self.quantity}'
-
-    def __gt__(self, other_product):
-        return self.price > other_product.price
-
-    def __lt__(self, other_product):
-        return self.price < other_product.price
-
-    def __eq__(self, other_product):
-        return self.price == other_product.price
 
     def buy(self, quantity: int) -> float:
         """
@@ -135,9 +169,9 @@ class NonStockedProduct(Product):
     def __init__(self, name: str, price: float,
                  active: bool = True):
         super().__init__(name, price, 0, active)
-        self._promotion = None
+        self.promotion = None
 
-    def show(self):
+    def __str__(self):
         """
         This function returns the item name and price
         :return: str
