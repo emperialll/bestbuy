@@ -1,6 +1,6 @@
 # My Python Store Management Project
 
-Welcome to my Python Store Management Project! This project is designed to help you manage a store with various products, apply promotions, and serve customers through a user-friendly interface. This README provides an overview of the project's structure, functionality, and how to get started.
+Welcome to my Python Store Management Project! This project has been implemented as a basic showcase of objected-oriented programming in Python. This README provides an overview of the project's structure, functionality, and how to get started.
 
 ## Table of Contents
 
@@ -66,6 +66,4 @@ This will execute the test cases and verify that the Product class behaves as ex
 
 If you'd like to contribute to this project or report any issues, please feel free to open an issue or submit a pull request on the project's GitHub repository.
 
-Thank you for using and contributing to my Python Store Management Project!
-
-Happy store management!
+Happy store management and OOP with Python!
