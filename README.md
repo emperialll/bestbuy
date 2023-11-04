@@ -9,7 +9,6 @@ Welcome to my Python Store Management Project! This project is designed to help 
 3. [Usage](#usage)
 4. [Testing](#testing)
 5. [Contributing](#contributing)
-6. [License](#license)
 
 ## Project Overview
 
